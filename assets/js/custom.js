@@ -13,6 +13,7 @@ function confirmSubmit(form, message) {
     } else {
         return false;
     } */
+
     noty({
         width: 200,
         text: message,
@@ -23,9 +24,9 @@ function confirmSubmit(form, message) {
         buttons: [{
             addClass: 'btn btn-primary btn-xs',
             text: 'Si',
-            onClick: function ($noty) {
+            onClick: function ($noty, form) {
                 $noty.close();
-                form.submit();
+                $('form').submit();
             }
         }, {
             addClass: 'btn btn-danger btn-xs',

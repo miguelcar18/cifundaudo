@@ -9,7 +9,7 @@
 @section('contenido')
 	<div class="panel panel-flat">
 		<div class="table-responsive">
-			{!! Form::open(['route' => ['clientes.destroy', $cliente->id], 'method' =>'DELETE', 'id' => 'form-eliminar-cliente', 'onSubmit' => 'return confirm(\'\\u00bfEst\\u00e1 realmente seguro(a) de eliminar este cliente?\')']) !!}
+			{!! Form::open(['route' => ['clientes.destroy', $cliente->id], 'method' =>'DELETE', 'id' => 'form-eliminar-cliente']) !!}
 			<table class="table table-bordered table-lg">
 				<tbody>
 					<tr class="active">
@@ -53,7 +53,7 @@
 						<td class="col-md-2 col-sm-3"><b>Acciones</b></td>
 						<td>
 							<button type="button" id="editar" name="editar" class="btn btn-success" onclick="document.location.href = '{{ URL::route('clientes.edit', $cliente->id) }}'"><i class="icon-pencil7 position-right"></i> Editar</button>
-							<button type="button" id="eliminar" name="eliminar" class="btn btn-danger tooltip-error borrar" objeto="{{ $cliente->id }}"  onclick="return confirmSubmit(document.forms['form-eliminar-curso'], '¿Está realmente seguro de eliminar este cliente?');"><i class="icon-trash position-right"></i> Eliminar</button>
+							<button type="button" id="eliminar" name="eliminar" class="btn btn-danger borrar" objeto="{{ $cliente->id }}"  onclick="return confirmSubmit(document.forms['form-eliminar-curso'], '¿Está realmente seguro de eliminar este cliente?');"><i class="icon-trash position-right"></i> Eliminar</button>
 						</td>
 					</tr>
 				</tbody>

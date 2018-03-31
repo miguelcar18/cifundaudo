@@ -132,7 +132,7 @@ class ClientesController extends Controller
     {
         if (is_null ($cliente))
             \App::abort(404);
-        $nombreCompleto = $cliente->nombre.' '.$cliente->apellido;
+        $nombreCompleto = $cliente->nombres.' '.$cliente->apellidos;
         $id = $cliente->id;
         $cliente->delete();
         if (\Request::ajax()) {
