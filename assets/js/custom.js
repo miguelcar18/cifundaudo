@@ -115,6 +115,29 @@ $('.tooltip-error').click(function (e) {
     });
 });
 
+$('select#curso').change(function(){
+    var valor = $(this).val();
+    $.ajax({
+        url: 'http://'+window.location.host+"/cifundaudo/buscarMontoCurso/" + valor,
+        method: "GET",
+        data: { _token: $('input[name=token]').val() },
+        dataType: 'json',
+        success: function(respuesta){
+            if(respuesta.curso.costo > 0){
+                $('input#monto').val(respuesta.curso.costo);
+            } else {
+                $('input#monto').val('');
+                console.log('Sin exito');
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            if(jqXHR){
+                console.log(errorThrown);
+            }
+        }
+    });
+});
+
 $("#usuarioForm").validate({
     ignore: 'input[type=hidden], .select2-search__field', 
     errorClass: 'validation-error-label',
@@ -714,7 +737,18 @@ $("#facturacionCursoForm").validate({
                     var action = '';
                     var alertMessage = '';
                     var count = 0;
-                    if(response.validations == false){
+                    if(response.validations == false && response.error == "cursoRegistrado"){
+                        noty({
+                            width: 200,
+                            text: "Al menos un curso del listado ya ha sido registrado anteriomente en otra factura",
+                            type: "warning",
+                            dismissQueue: true,
+                            timeout: 10000,
+                            layout: "topRight",
+                            buttons: false
+                        });
+                    }
+                    else if(response.validations == false){
                         //alertMessage = "<b>Campos únicos:</b> <br>";
                         $.each(response.errors, function(index, value){
                             count++;
@@ -749,9 +783,10 @@ $("#facturacionCursoForm").validate({
                             $('form#facturacionCursoForm').reset();
                             $("#cliente").select2("val", "");
                             $("#tablaCargaFamiliar tbody > tr").remove();
-                            $(document).find('.validation-valid-label').remove();
+                            $("select#curso").find("option").prop("disabled", false);
                         }
                     }
+                    $(document).find('.validation-valid-label').remove();
                     $("button#facturacionCursoSubmit").removeClass('disabled');
                     $("button#cancelar").removeClass('disabled');
                 }
@@ -892,7 +927,9 @@ $("#passwordForm").validate({
 
 function eliminarFila(fila){
     var monto = fila.parentNode.previousSibling.firstChild.value;
+    var valor = fila.parentNode.previousSibling.previousSibling.childNodes[0].value;
     fila.parentNode.parentNode.remove();
+    $("select#curso").find("option[value='"+valor+"']").prop("disabled", false);
     var total = $('#total').val();
     var nuevoTotal = parseFloat(total) - parseFloat(monto);
     $('#total').val(numeral(nuevoTotal).format('0.00'));
@@ -900,7 +937,9 @@ function eliminarFila(fila){
 
 function eliminarFilaEditar(fila){
     var monto = fila.parentNode.previousSibling.previousSibling.childNodes[1].value;
+    var valor = fila.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.childNodes[1].value;
     fila.parentNode.parentNode.remove();
+    $("select#curso").find("option[value='"+valor+"']").prop("disabled", false);
     var total = $('#total').val().replace(',', '.');
     var nuevoTotal = parseFloat(total) - parseFloat(monto);
     $('#total').val(numeral(nuevoTotal).format('0.00'));
@@ -914,25 +953,67 @@ function agregarValor(){
     var selected    = combo.options[combo.selectedIndex].text;
 
     if(curso == ""){
-        alert("Seleccione un curso");
+        noty({
+            width: 200,
+            text: "Seleccione un curso",
+            type: "warning",
+            dismissQueue: true,
+            timeout: 10000,
+            layout: "topRight",
+            buttons: false
+        });
     }
     else if(monto == ""){
-        alert("Ingrese un monto");
+        noty({
+            width: 200,
+            text: "Ingrese un monto",
+            type: "warning",
+            dismissQueue: true,
+            timeout: 10000,
+            layout: "topRight",
+            buttons: false
+        });
     }
     else{
-        var fila = tabla.insertRow(-1);
-        var celda0 = fila.insertCell(0);
-        var celda1 = fila.insertCell(1);
-        var celda2 = fila.insertCell(2);
+        $.ajax({
+            url: 'http://'+window.location.host+"/cifundaudo/buscarMontoCurso/" + curso,
+            method: "GET",
+            data: { _token: $('input[name=token]').val() },
+            dataType: 'json',
+            success: function(respuesta){
+                if(monto <= respuesta.curso.costo){
+                    var fila = tabla.insertRow(-1);
+                    var celda0 = fila.insertCell(0);
+                    var celda1 = fila.insertCell(1);
+                    var celda2 = fila.insertCell(2);
 
-        celda0.innerHTML = '<input type="hidden" name="cursoA[]" id="cursoA[]" value="'+curso+'" />'+selected;
-        celda1.innerHTML = '<input type="hidden" name="montoA[]" id="montoA[]" value="'+monto+'" />'+numeral(monto).format('0.00');
-        celda2.innerHTML = '<button type="button" onclick="eliminarFila(this)" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i></button>';
-        var total = $('#total').val();
-        var nuevoTotal = parseFloat(total) + parseFloat(monto);
-        $('#total').val(numeral(nuevoTotal).format('0.00'));
-        $('#curso').val('');
-        document.getElementById("monto").value = "";
-        $(document).find('.validation-valid-label').remove();
+                    celda0.innerHTML = '<input type="hidden" name="cursoA[]" id="cursoA[]" value="'+curso+'" />'+selected;
+                    celda1.innerHTML = '<input type="hidden" name="montoA[]" id="montoA[]" value="'+monto+'" />'+numeral(monto).format('0.00');
+                    celda2.innerHTML = '<button type="button" onclick="eliminarFila(this)" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i></button>';
+                    var total = $('#total').val();
+                    var nuevoTotal = parseFloat(total) + parseFloat(monto);
+                    $('#total').val(numeral(nuevoTotal).format('0.00'));
+                    $("select#curso").find(":selected").prop("disabled", true);
+                    $('#curso').val('');
+                    document.getElementById("monto").value = "";
+                } else {
+                    noty({
+                        width: 200,
+                        text: 'El monto ingresado supera el costo del curso elegido ('+respuesta.curso.costo+')',
+                        type: "warning",
+                        dismissQueue: true,
+                        timeout: 10000,
+                        layout: "topRight",
+                        buttons: false
+                    });
+                }
+                $(document).find('.validation-valid-label').remove();
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                if(jqXHR){
+                    console.log(errorThrown);
+                }
+            }
+        });
     }
 }

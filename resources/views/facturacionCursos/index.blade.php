@@ -60,6 +60,9 @@
 						<a href="#" data-id="{{ $data->id }}" class="btn btn-danger btn-icon tooltip-error borrar-usuario" data-rel="tooltip" title="Eliminar {{ number_format($data->nombreCliente->cedula, 0, '', '.') }}" objeto="{{ $data->id }}">
 							<i class="icon-cancel-square"></i>
 						</a>
+						<a href="{{ URL::route('reporteFacturaCurso', $data->id) }}" class="btn bg-teal btn-icon" title="Editar {{ number_format($data->nombreCliente->cedula, 0, '', '.') }}" data-id="{{ $data->id }}" target="_blank">
+							<i class="icon-file-pdf"></i>
+						</a>
 					</td>
 				</tr>
 				@endforeach

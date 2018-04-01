@@ -17,6 +17,9 @@
 			wrapperClass: 'bg-teal-400',
 			fileButtonHtml: '<i class="icon-googleplus5"></i>'
 		});
+		$("input[name^='cursoA']").each(function() {
+			$("select#curso").find("option[value='"+$(this).val()+"']").prop("disabled", true);
+		});
 	</script>
 @stop
 

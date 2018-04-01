@@ -9,7 +9,7 @@
 @section('contenido')
 	<div class="panel panel-flat">
 		<div class="table-responsive">
-			{!! Form::open(['route' => ['facturacionCursos.destroy', $facturacionCurso->id], 'method' =>'DELETE', 'id' => 'form-eliminar-factura-curso', 'onSubmit' => 'return confirm(\'\\u00bfEst\\u00e1 realmente seguro(a) de eliminar esta factura?\')']) !!}
+			{!! Form::open(['route' => ['facturacionCursos.destroy', $facturacionCurso->id], 'method' =>'DELETE', 'id' => 'form-eliminar-factura-curso']) !!}
 			<table class="table table-bordered table-lg">
 				<tbody>
 					<tr class="active">
@@ -41,7 +41,7 @@
 						<td class="col-md-2 col-sm-3"><b>Acciones</b></td>
 						<td>
 							<button type="button" id="editar" name="editar" class="btn btn-success" onclick="document.location.href = '{{ URL::route('facturacionCursos.edit', $facturacionCurso->id) }}'"><i class="icon-pencil7 position-right"></i> Editar</button>
-							<button type="button" id="eliminar" name="eliminar" class="btn btn-danger tooltip-error borrar" objeto="1"  onclick="return confirmSubmit(document.forms['form-eliminar-factura-curso'], '¿Está realmente seguro de eliminar esta factura?');"><i class="icon-trash position-right"></i> Eliminar</button>
+							<button type="button" id="eliminar" name="eliminar" class="btn btn-danger borrar" objeto="1"  onclick="return confirmSubmit(document.forms['form-eliminar-factura-curso'], '¿Está realmente seguro de eliminar esta factura?');"><i class="icon-trash position-right"></i> Eliminar</button>
 						</td>
 					</tr>
 				</tbody>

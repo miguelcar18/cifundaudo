@@ -51,25 +51,46 @@ class FacturacionCursosController extends Controller
     public function store(Request $request)
     {
         if($request->ajax()){
-            $campos = [
-                'cliente' => $request['cliente']
-            ];
-            FacturacionCurso::create($campos);
-            $ultimoIdOrden = \DB::getPdo()->lastInsertId();
-            for($i = 0; $i < count($request['cursoA']); $i++){
-                $curso = $request['cursoA'][$i];
-                $monto = $request['montoA'][$i];
-                $camposCarga = [
-                    'curso'         => $request['cursoA'][$i], 
-                    'monto'         => $request['montoA'][$i],
-                    'facturaCurso'  => $ultimoIdOrden
-                ];
-                DatosFacturaCurso::create($camposCarga);
-            }
 
-            return response()->json([
-                'validations' => true
-            ]);
+            /*Verificación*/
+            $contador = 0;
+            for($i = 0; $i < count($request['cursoA']); $i++){
+                $curso      = $request['cursoA'][$i];
+                $cliente    = $request['cliente'];
+                $buscar     = DatosFacturaCurso::join('facturacion_cursos', 'facturacion_cursos.id', '=', 'datos_factura_cursos.facturaCurso')->where(['cliente' => $cliente, 'curso' => $curso])->count();
+                if($buscar > 0){
+                    $contador++;
+                }
+            }
+            /*Fin verificación*/
+
+            if($contador == 0){
+                $campos = [
+                    'cliente' => $request['cliente']
+                ];
+                FacturacionCurso::create($campos);
+                $ultimoIdOrden = \DB::getPdo()->lastInsertId();
+
+                for($i = 0; $i < count($request['cursoA']); $i++){
+                    $curso = $request['cursoA'][$i];
+                    $monto = $request['montoA'][$i];
+                    $camposCarga = [
+                        'curso'         => $request['cursoA'][$i], 
+                        'monto'         => $request['montoA'][$i],
+                        'facturaCurso'  => $ultimoIdOrden
+                    ];
+                    DatosFacturaCurso::create($camposCarga);
+                }
+
+                return response()->json([
+                    'validations' => true
+                ]);
+            } else {
+                return response()->json([
+                    'validations' => false, 
+                    'error' => 'cursoRegistrado'
+                ]);
+            }
         }
     }
 
@@ -188,5 +209,24 @@ class FacturacionCursosController extends Controller
             Session::flash('message', $mensaje);
             return Redirect::route('facturacionCursos.index');
         }
+    }
+
+    public function buscarMontoCurso(Request $request, $id){
+        if($request->ajax()){
+            $curso = Curso::find($id);
+            return Response::json(array(
+                'correcto'  =>  true,
+                'curso'     =>  $curso
+            ));
+        }
+    }
+
+    public function reporteFactura($id){
+        //$buscar  = DatosFacturaCurso::join('facturacion_cursos', 'facturacion_cursos.id', '=', 'datos_factura_cursos.facturaCurso')->where(['facturacion_cursos.id' => $id)->get();
+
+        $datos =DatosFacturaCurso::find($id);
+        //$pdf = \PDF::loadView('facturacionCursos.factura', compact('datos'));
+        //return $pdf->stream('reporte.pdf');
+        return $datos;
     }
 }
