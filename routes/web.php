@@ -25,3 +25,4 @@ Route::post('profile/change-password', ['as' => 'postChangePassword', 'uses' => 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/buscarMontoCurso/{id}', ['as' => 'buscarMontoCurso', 'uses' => 'FacturacionCursosController@buscarMontoCurso']);
 Route::get('factura-curso/{id}', ['as' => 'reporteFacturaCurso', 'uses' =>'FacturacionCursosController@reporteFactura']);
+Route::get('factura-diplomado/{id}', ['as' => 'reporteFacturaDiplomado', 'uses' =>'FacturacionDiplomadosController@reporteFactura']);

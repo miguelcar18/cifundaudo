@@ -38,49 +38,37 @@
 		<table class="table datatable-basic">
 			<thead>
 				<tr>
+					<th>Código</th>
 					<th>Cédula</th>
                     <th>Nombre y apellido</th>
-                    <th>Curso</th>
-                    <th>Monto</th>
                     <th class="text-center">Acciones</th>
 				</tr>
 			</thead>
 			<tbody>
+				@foreach($datosFactura as $data)
 				<tr>
-					<td>19.224.657</td>
-					<td>Pedro Perez</td>
-					<td>Derecho laboral</td>
-					<td>315.000</td>
+					<td>{{ $data->id }}</td>
+					<td>{{ number_format($data->nombreCliente->cedula, 0, '', '.') }}</td>
+					<td>{{ $data->nombreCliente->nombres.' '.$data->nombreCliente->apellidos }}</td>
 					<td class="text-center" style="padding: 1px">
-						<a href="{{ URL::route('facturacionDiplomados.show', 1) }}" class="btn btn-primary btn-icon" title="Ver 19.224.657" data-id="1">
+						<a href="{{ URL::route('facturacionDiplomados.show', $data->id) }}" class="btn btn-primary btn-icon" title="Ver {{ number_format($data->nombreCliente->cedula, 0, '', '.') }}" data-id="{{ $data->id }}">
 							<i class="icon-eye"></i>
 						</a>
-						<a href="{{ URL::route('facturacionDiplomados.edit', 1) }}" class="btn btn-warning btn-icon" title="Editar 19.224.657" data-id="1">
+						<a href="{{ URL::route('facturacionDiplomados.edit', $data->id) }}" class="btn btn-warning btn-icon" title="Editar {{ number_format($data->nombreCliente->cedula, 0, '', '.') }}" data-id="{{ $data->id }}">
 							<i class="icon-pencil7"></i>
 						</a>
-						<a href="#" data-id="1" class="btn btn-danger btn-icon tooltip-error borrar-usuario" data-rel="tooltip" title="Eliminar 19.224.657" objeto="1" data-id="1">
+						<a href="#" data-id="{{ $data->id }}" class="btn btn-danger btn-icon tooltip-error borrar-usuario" data-rel="tooltip" title="Eliminar {{ number_format($data->nombreCliente->cedula, 0, '', '.') }}" objeto="{{ $data->id }}">
 							<i class="icon-cancel-square"></i>
+						</a>
+						<a href="{{ URL::route('reporteFacturaDiplomado', $data->id) }}" class="btn bg-teal btn-icon" title="Editar {{ number_format($data->nombreCliente->cedula, 0, '', '.') }}" data-id="{{ $data->id }}" target="_blank">
+							<i class="icon-file-pdf"></i>
 						</a>
 					</td>
 				</tr>
-				<tr>
-					<td>21.453.738</td>
-					<td>Maria Sanchez</td>
-					<td>Producción de gas</td>
-					<td>315.000</td>
-					<td class="text-center" style="padding: 1px">
-						<a href="{{ URL::route('facturacionDiplomados.show', 1) }}" class="btn btn-primary btn-icon" title="Ver 21.453.738" data-id="1">
-							<i class="icon-eye"></i>
-						</a>
-						<a href="{{ URL::route('facturacionDiplomados.edit', 1) }}" class="btn btn-warning btn-icon" title="Editar 21.453.738" data-id="1">
-							<i class="icon-pencil7"></i>
-						</a>
-						<a href="#" data-id="1" class="btn btn-danger btn-icon tooltip-error borrar-usuario" data-rel="tooltip" title="Eliminar 21.453.738" objeto="1" data-id="1">
-							<i class="icon-cancel-square"></i>
-						</a>
-					</td>
-				</tr>
+				@endforeach
 			</tbody>
 		</table>
+		{!! Form::open(array('route' => array('facturacionDiplomados.destroy', 'USER_ID'), 'method' => 'DELETE', 'role' => 'form', 'id' => 'form-delete')) !!}
+        {!! Form::close() !!}
 	</div>
 @stop

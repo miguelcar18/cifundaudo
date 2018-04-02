@@ -222,11 +222,11 @@ class FacturacionCursosController extends Controller
     }
 
     public function reporteFactura($id){
-        //$buscar  = DatosFacturaCurso::join('facturacion_cursos', 'facturacion_cursos.id', '=', 'datos_factura_cursos.facturaCurso')->where(['facturacion_cursos.id' => $id)->get();
+        //$buscar  = FacturacionCurso::join('datos_factura_cursos', 'facturacion_cursos.id', '=', 'datos_factura_cursos.facturaCurso')->where(['facturacion_cursos.id' => $id)->get();
 
-        $datos =DatosFacturaCurso::find($id);
-        //$pdf = \PDF::loadView('facturacionCursos.factura', compact('datos'));
-        //return $pdf->stream('reporte.pdf');
-        return $datos;
+        $datos =FacturacionCurso::find($id);
+        $cursos = DatosFacturaCurso::where('facturaCurso', $id)->get();
+        $pdf = \PDF::loadView('facturacionCursos.factura', compact('datos', 'cursos'));
+        return $pdf->stream('reporte.pdf');
     }
 }

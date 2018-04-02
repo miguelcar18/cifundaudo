@@ -17,14 +17,22 @@
 			wrapperClass: 'bg-teal-400',
 			fileButtonHtml: '<i class="icon-googleplus5"></i>'
 		});
+		$("input[name^='cursoA']").each(function() {
+			$("select#curso").find("option[value='"+$(this).val()+"']").prop("disabled", true);
+		});
 	</script>
 @stop
 
 @section('contenido')
 	<div class="panel panel-flat">
 		<div class="panel-body">
-			{{ Form::model($cliente, ['route' => ['facturacionDiplomados.update', $cliente->id], "method" => "PUT", "name" => "facturacionDiplomadoForm", "id" => "facturacionDiplomadoForm", "class" => "form-horizontal"]) }}
-				@include('facturacionDiplomados.form.FacturacionDiplomadosFormType', ["cliente" => $cliente])
+			{{ Form::model($facturacionDiplomado, ['route' => ['facturacionDiplomados.update', $facturacionDiplomado->id], "method" => "PUT", "name" => "facturacionDiplomadoForm", "id" => "facturacionDiplomadoForm", "class" => "form-horizontal"]) }}
+				@include('facturacionDiplomados.form.FacturacionDiplomadosFormType', ["clientes" => $clientes, 'cursos' => $cursos])
+				@if(isset($listado))
+                @include('facturacionDiplomados.form.listaCursos', ['listado' => $listado])
+                @else
+                @include('facturacionDiplomados.form.listaCursos')
+                @endif
 				@include('layouts.botonesFormularios', ['tituloBoton' => "Actualizar", 'rutaCancelar' => URL::route('facturacionDiplomados.index'), 'valorData' => 0, 'idBoton' => 'facturacionDiplomadoSubmit'])
 			{{ Form::close() }}
 		</div>

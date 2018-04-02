@@ -24,8 +24,15 @@
 	<div class="panel panel-flat">
 		<div class="panel-body">
 			{{ Form::open(["method" => "post", "route" =>'facturacionDiplomados.store', "name" => "facturacionDiplomadoForm", "id" => "facturacionDiplomadoForm", "class" => "form-horizontal"]) }}
+			<fieldset class="content-group">
 				@include('facturacionDiplomados.form.FacturacionDiplomadosFormType', ['cursos' => $cursos])
-				@include('layouts.botonesFormularios', ['tituloBoton' => "Guardar", 'rutaCancelar' => URL::route('facturacionDiplomados.index'), 'valorData' => 1, 'idBoton' => 'facturacionDiplomadoSubmit'])
+				@if(isset($listado))
+				@include('facturacionDiplomados.form.listaCursos', ['listado' => $listado])
+				@else
+				@include('facturacionDiplomados.form.listaCursos')
+				@endif
+			</fieldset>
+			@include('layouts.botonesFormularios', ['tituloBoton' => "Guardar", 'rutaCancelar' => URL::route('facturacionDiplomados.index'), 'valorData' => 1, 'idBoton' => 'facturacionDiplomadoSubmit'])
 			{{ Form::close() }}
 		</div>
 	</div>

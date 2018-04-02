@@ -808,6 +808,145 @@ $("#facturacionCursoForm").validate({
     }
 });
 
+$("#facturacionDiplomadoForm").validate({
+    ignore: 'input[type=hidden], .select2-search__field', 
+    errorClass: 'validation-error-label',
+    successClass: 'validation-valid-label',
+    highlight: function(element, errorClass) {
+        $(element).removeClass(errorClass);
+    },
+    unhighlight: function(element, errorClass) {
+        $(element).removeClass(errorClass);
+    },
+    errorPlacement: function(error, element) {
+        if (element.parents('div').hasClass("checker") || element.parents('div').hasClass("choice") || element.parent().hasClass('bootstrap-switch-container') ) {
+            if(element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+                error.appendTo( element.parent().parent().parent().parent() );
+            }
+            else {
+                error.appendTo( element.parent().parent().parent().parent().parent() );
+            }
+        }
+        else if (element.parents('div').hasClass('checkbox') || element.parents('div').hasClass('radio')) {
+            error.appendTo( element.parent().parent().parent() );
+        }
+        else if (element.parents('div').hasClass('has-feedback') || element.hasClass('select2-hidden-accessible')) {
+            error.appendTo( element.parent() );
+        }
+        else if (element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+            error.appendTo( element.parent().parent() );
+        }
+        else if (element.parent().hasClass('uploader') || element.parents().hasClass('input-group')) {
+            error.appendTo( element.parent().parent() );
+        }
+        else {
+            error.insertAfter(element);
+        }
+    },
+    validClass: "validation-valid-label",
+    success: function(label) {
+        label.addClass("validation-valid-label").text("Correcto.")
+    },
+    rules: {
+        cliente: {
+            required: true
+        }
+    },
+    messages: {
+        cliente: {
+            required: 'Seleccione un cliente'
+        }
+    },
+    submitHandler: function () {
+        var token = $("input[name=_token]").val();
+        var formData = new FormData($("form#facturacionDiplomadoForm")[0]);
+        if($('#tablaCargaFamiliar').find("tr").length > 1){
+            $.ajax({
+                url:  $("form#facturacionDiplomadoForm").attr('action'),
+                type: $("form#facturacionDiplomadoForm").attr('method'),
+                headers: {'X-CSRF-TOKEN' : token},
+                data: formData,
+                processData: false,
+                contentType: false,
+                beforeSend:function(){
+                    $("button#facturacionDiplomadoSubmit").addClass('disabled');
+                    $("button#cancelar").addClass('disabled');
+                },
+                success:function(response){
+                    var action = '';
+                    var alertMessage = '';
+                    var count = 0;
+                    if(response.validations == false && response.error == "cursoRegistrado"){
+                        noty({
+                            width: 200,
+                            text: "Al menos un diplomado del listado ya ha sido registrado anteriomente en otra factura",
+                            type: "warning",
+                            dismissQueue: true,
+                            timeout: 10000,
+                            layout: "topRight",
+                            buttons: false
+                        });
+                    }
+                    else if(response.validations == false){
+                        //alertMessage = "<b>Campos únicos:</b> <br>";
+                        $.each(response.errors, function(index, value){
+                            count++;
+                            alertMessage+= count+". "+value+"<br>";
+                        });
+                        noty({
+                            width: 200,
+                            text: alertMessage,
+                            type: "information",
+                            dismissQueue: true,
+                            timeout: 10000,
+                            layout: "topRight",
+                            buttons: false
+                        });
+                    }
+                    else if(response.validations == true){
+                        if($("button#facturacionDiplomadoSubmit").attr('data') == 1)
+                            action = 'registrada';
+                        else if($("button#facturacionDiplomadoSubmit").attr('data') == 0)
+                            action = 'actualizada';
+                        alertMessage = 'Factura '+action+' satisfactoriamente';
+                        noty({
+                            width: 200,
+                            text: alertMessage,
+                            type: "success",
+                            dismissQueue: true,
+                            timeout: 4000,
+                            layout: "topCenter",
+                            buttons: false
+                        });
+                        if($("button#facturacionDiplomadoSubmit").attr('data') == 1){
+                            $('form#facturacionDiplomadoForm').reset();
+                            $("#cliente").select2("val", "");
+                            $("#tablaCargaFamiliar tbody > tr").remove();
+                            $("select#curso").find("option").prop("disabled", false);
+                        }
+                    }
+                    $(document).find('.validation-valid-label').remove();
+                    $("button#facturacionDiplomadoSubmit").removeClass('disabled');
+                    $("button#cancelar").removeClass('disabled');
+                }
+            });
+        }else{
+            noty({
+                width: 200,
+                text: 'Debe ingresar al menos un diplomado.',
+                type: "information",
+                dismissQueue: true,
+                timeout: 10000,
+                layout: "topRight",
+                buttons: false
+            });
+            $(document).find('.validation-valid-label').remove();
+        }
+        
+        return false;
+    }
+});
+
 $("#passwordForm").validate({
     ignore: 'input[type=hidden], .select2-search__field', 
     errorClass: 'validation-error-label',
