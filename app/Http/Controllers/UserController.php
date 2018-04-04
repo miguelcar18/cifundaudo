@@ -20,14 +20,7 @@ class UserController extends Controller
 
     public function __construct(){
         $this->middleware('auth');
-        $this->middleware(function ($request, $next) {
-            $this->user = Auth::user();
-            if($this->user->rol != 1){
-                Session::flash('message', 'Sin privilegios');
-                return Redirect::route('principal');
-            }
-            return $next($request);
-        });
+        $this->middleware('is_admin');
     }
 
     /**
@@ -164,9 +157,8 @@ class UserController extends Controller
             \App::abort(404);
         }
         $user->delete();
-
+        \File::delete('uploads/users/'.$user->path);
         if (\Request::ajax()){
-            \File::delete('uploads/users/'.$user->path);
             return Response::json(array (
                 'success' => true,
                 'msg'     => 'Usuario "' . $user->username . '" eliminado satisfactoriamente',

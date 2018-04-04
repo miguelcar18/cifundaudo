@@ -19,7 +19,7 @@ class FacturacionDiplomado extends Model
      * @var array
      */
     protected $fillable = [
-        'cliente'
+        'cliente', 'pagado', 'codigoPago', 'tipoPago'
     ];
 
     public function nombreCliente(){

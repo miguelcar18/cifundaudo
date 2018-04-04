@@ -42,17 +42,21 @@
 				</tr>
 			</thead>
 			<tbody>
+				@foreach($datosFactura as $data)
+				@if($data->monto < $data->nombreCurso->costo)
 				<tr>
-					<td>21.453.738</td>
-					<td>Maria Sanchez</td>
-					<td>Análisis de precios lulown</td>
-					<td>30.000</td>
+					<td>{{ number_format($data->nombreFacturacionCurso->nombreCliente->cedula, 0, '', '.') }}</td>
+					<td>{{ $data->nombreFacturacionCurso->nombreCliente->nombres.' '.$data->nombreFacturacionCurso->nombreCliente->apellidos }}</td>
+					<td>{{ $data->nombreCurso->nombre }}</td>
+					<td>{{ number_format($data->nombreCurso->costo - $data->monto, 2, ',', '.') }}</td>
 					<td class="text-center" style="padding: 1px">
-						<a href="{{ URL::route('cuentas-por-cobrar.show', 1) }}" class="btn btn-primary btn-icon" title="Ver 21.453.738" data-id="1">
+						<a href="{{ URL::route('cuentas-por-cobrar.show', $data->id) }}" class="btn btn-primary btn-icon" title="Ver {{ number_format($data->nombreFacturacionCurso->nombreCliente->cedula, 0, '', '.') }}" data-id="1">
 							<i class="icon-eye"></i>
 						</a>
 					</td>
 				</tr>
+				@endif
+				@endforeach
 			</tbody>
 		</table>
 	</div>

@@ -4,9 +4,27 @@ namespace Fundaudo\Http\Controllers;
 
 use Fundaudo\CuentaCobrar;
 use Illuminate\Http\Request;
+use Fundaudo\Curso;
+use Fundaudo\Cliente;
+use Fundaudo\FacturacionCurso;
+use Fundaudo\DatosFacturaCurso;
+use Fundaudo\Http\Requests;
+use Session;
+use App;
+use Auth;
+use Carbon\Carbon;
+use Illuminate\Routing\Route;
+use Input;
+use Redirect;
+use Response;
 
 class CuentasCobrarController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth');
+        $this->middleware('is_admin');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +32,8 @@ class CuentasCobrarController extends Controller
      */
     public function index()
     {
-        return view('cuentasCobrar.index');
+        $datosFactura = DatosFacturaCurso::All();
+        return view('cuentasCobrar.index', compact('datosFactura'));
     }
 
     /**
@@ -44,9 +63,10 @@ class CuentasCobrarController extends Controller
      * @param  \Fundaudo\CuentaCobrar  $cuentaCobrar
      * @return \Illuminate\Http\Response
      */
-    public function show(/*CuentaCobrar $cuentaCobrar*/)
+    public function show($id)
     {
-        return view('cuentasCobrar.show');
+        $data = DatosFacturaCurso::find($id);
+        return view('cuentasCobrar.show', compact('data'));
     }
 
     /**

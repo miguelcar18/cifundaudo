@@ -19,6 +19,7 @@ class CursosController extends Controller
 {
     public function __construct(){
         $this->middleware('auth');
+        $this->middleware('is_admin', ['only' => ['store', 'edit', 'update', 'destroy']]);
     }
 
     /**

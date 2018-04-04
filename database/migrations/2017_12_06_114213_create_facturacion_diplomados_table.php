@@ -16,6 +16,9 @@ class CreateFacturacionDiplomadosTable extends Migration
         Schema::create('facturacion_diplomados', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('cliente')->unsigned();
+            $table->integer('pagado')->nullable();
+            $table->string('codigoPago')->nullable();
+            $table->integer('tipoPago')->nullable();
             $table->foreign('cliente')->references('id')->on('clientes')->onDelete('cascade');
             $table->timestamps();
         });

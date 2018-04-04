@@ -1064,6 +1064,185 @@ $("#passwordForm").validate({
     }
 });
 
+$("#reporteForm").validate({
+    ignore: 'input[type=hidden], .select2-search__field', 
+    errorClass: 'validation-error-label',
+    successClass: 'validation-valid-label',
+    highlight: function(element, errorClass) {
+        $(element).removeClass(errorClass);
+    },
+    unhighlight: function(element, errorClass) {
+        $(element).removeClass(errorClass);
+    },
+    errorPlacement: function(error, element) {
+        if (element.parents('div').hasClass("checker") || element.parents('div').hasClass("choice") || element.parent().hasClass('bootstrap-switch-container') ) {
+            if(element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+                error.appendTo( element.parent().parent().parent().parent() );
+            }
+            else {
+                error.appendTo( element.parent().parent().parent().parent().parent() );
+            }
+        }
+        else if (element.parents('div').hasClass('checkbox') || element.parents('div').hasClass('radio')) {
+            error.appendTo( element.parent().parent().parent() );
+        }
+        else if (element.parents('div').hasClass('has-feedback') || element.hasClass('select2-hidden-accessible')) {
+            error.appendTo( element.parent() );
+        }
+        else if (element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+            error.appendTo( element.parent().parent() );
+        }
+        else if (element.parent().hasClass('uploader') || element.parents().hasClass('input-group')) {
+            error.appendTo( element.parent().parent() );
+        }
+        else {
+            error.insertAfter(element);
+        }
+    },
+    validClass: "validation-valid-label",
+    success: function(label) {
+        label.addClass("validation-valid-label").text("Correcto.")
+    },
+    rules: {
+        reporte: {
+            required: true
+        },
+        mes: {
+            required: true
+        },
+        anio: {
+            required: true
+        }
+    },
+    messages: {
+        reporte: {
+            required: 'Seleccione una opción'
+        },
+        mes: {
+            required: 'Seleccione una opción'
+        },
+        anio: {
+            required: 'Seleccione una opción'
+        },
+    }/*,
+    submitHandler: function () {
+        return false;
+    }*/
+});
+
+$("#reciboForm").validate({
+    ignore: 'input[type=hidden], .select2-search__field', 
+    errorClass: 'validation-error-label',
+    successClass: 'validation-valid-label',
+    highlight: function(element, errorClass) {
+        $(element).removeClass(errorClass);
+    },
+    unhighlight: function(element, errorClass) {
+        $(element).removeClass(errorClass);
+    },
+    errorPlacement: function(error, element) {
+        if (element.parents('div').hasClass("checker") || element.parents('div').hasClass("choice") || element.parent().hasClass('bootstrap-switch-container') ) {
+            if(element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+                error.appendTo( element.parent().parent().parent().parent() );
+            }
+            else {
+                error.appendTo( element.parent().parent().parent().parent().parent() );
+            }
+        }
+        else if (element.parents('div').hasClass('checkbox') || element.parents('div').hasClass('radio')) {
+            error.appendTo( element.parent().parent().parent() );
+        }
+        else if (element.parents('div').hasClass('has-feedback') || element.hasClass('select2-hidden-accessible')) {
+            error.appendTo( element.parent() );
+        }
+        else if (element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+            error.appendTo( element.parent().parent() );
+        }
+        else if (element.parent().hasClass('uploader') || element.parents().hasClass('input-group')) {
+            error.appendTo( element.parent().parent() );
+        }
+        else {
+            error.insertAfter(element);
+        }
+    },
+    validClass: "validation-valid-label",
+    success: function(label) {
+        label.addClass("validation-valid-label").text("Correcto.")
+    },
+    rules: {
+        factura: {
+            required: true
+        },
+        tipoPago: {
+            required: true
+        },
+        codigoPago: {
+            required: true
+        }
+    },
+    messages: {
+        factura: {
+            required: 'Seleccione una opción'
+        },
+        tipoPago: {
+            required: 'Seleccione una opción'
+        },
+        codigoPago: {
+            required: 'Ingrese un código'
+        },
+    },
+    submitHandler: function () {
+        var token = $("input[name=_token]").val();
+        var formData = new FormData($("form#reciboForm")[0]);
+        $.ajax({
+            url:  $("form#reciboForm").attr('action'),
+            type: $("form#reciboForm").attr('method'),
+            headers: {'X-CSRF-TOKEN' : token},
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend:function(){
+                $("button#reciboSubmit").addClass('disabled');
+                $("button#cancelar").addClass('disabled');
+            },
+            success:function(response){
+                var action = '';
+                var alertMessage = '';
+                var count = 0;
+                if(response.validations == false){
+                    noty({
+                        width: 200,
+                        text: 'La operación no pudo ser realizada.',
+                        type: "error",
+                        dismissQueue: true,
+                        timeout: 4000,
+                        layout: "topCenter",
+                        buttons: false
+                    });
+                }
+                else if(response.validations == true){
+                    action = 'registrado';
+                    alertMessage = 'Recibo '+action+' satisfactoriamente';
+                    noty({
+                        width: 200,
+                        text: alertMessage,
+                        type: "success",
+                        dismissQueue: true,
+                        timeout: 4000,
+                        layout: "topCenter",
+                        buttons: false
+                    });
+                    $('form#reciboForm').reset();
+                    $(document).find('.validation-valid-label').remove();
+                }
+                $("button#reciboSubmit").removeClass('disabled');
+                $("button#cancelar").removeClass('disabled');
+            }
+        })
+        return false;
+    }
+});
+
 function eliminarFila(fila){
     var monto = fila.parentNode.previousSibling.firstChild.value;
     var valor = fila.parentNode.previousSibling.previousSibling.childNodes[0].value;

@@ -1,6 +1,6 @@
 @extends('layouts.base')
 
-@section('titulo')Facturción de diplomados - Datos de la factura@stop
+@section('titulo')<title>Facturción de diplomados - Datos de la factura</title>@stop
 
 @section('cabecera')
 @include('layouts.breadcrumb', ['titulo' => "Datos de la factura", 'tituloModulo' => "Facturción de diplomados", 'rutaModulo' => URL::route('facturacionDiplomados.index'), 'tituloSubmodulo' => "Datos de la factura"])

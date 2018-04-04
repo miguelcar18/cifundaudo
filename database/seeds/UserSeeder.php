@@ -13,12 +13,12 @@ class UserSeeder extends Seeder
     {
         DB::table('usuarios')->insert([
             'id'            => '1',
-            'name'          => 'Miguel Carmona',
-            'username'      => 'miguelcar18',
-            'email'         => 'miguelcar18@gmail.com',
+            'name'          => 'Juan Tovar',
+            'username'      => 'tovarjc66',
+            'email'         => 'tovarjc66@gmail.com',
             'password'      => bcrypt('123456'),
             'rol'           => 1,
-            'path'          => '28miguel.jpeg',
+            'path'          => 'JuanTovar.jpg',
             'created_at'    => date('Y-m-d H:m:s'),
             'updated_at'    => date('Y-m-d H:m:s')
         ]);

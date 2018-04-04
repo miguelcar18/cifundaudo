@@ -60,7 +60,7 @@
             <p>Email: {{ $datos->nombreCliente->email }}</p>
         </div>
         <div style="float:right; margin-top: 40px; border-style: solid; padding-right: 4px; width:345px; height:150px">
-            <h2 style="margin-top: 0px; text-align: right"><b>Recibo Nº: {{ $datos->id }}</b></h2>
+            <h2 style="margin-top: 0px; text-align: right"><b>Recibo Nº: {{'C-'.$datos->id }}</b></h2>
             <p>Emisión: {{ date('d/m/Y') }}</p>
             <p>Vendedor: FUNDAUDO</p>
         </div>

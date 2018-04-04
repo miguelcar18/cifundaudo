@@ -19,6 +19,11 @@ use Response;
 
 class FacturacionDiplomadosController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth');
+        $this->middleware('is_admin');
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -66,7 +71,8 @@ class FacturacionDiplomadosController extends Controller
 
             if($contador == 0){
                 $campos = [
-                    'cliente' => $request['cliente']
+                    'cliente' => $request['cliente'],
+                    'pagado'  => 0
                 ];
                 FacturacionDiplomado::create($campos);
                 $ultimoIdOrden = \DB::getPdo()->lastInsertId();
@@ -135,7 +141,8 @@ class FacturacionDiplomadosController extends Controller
         {
             $this->facturacion = $facturacionDiplomado;
             $campos = [
-                'cliente' => $request['cliente']
+                'cliente' => $request['cliente'],
+                'pagado'  => 0
             ];
             $this->facturacion->fill($campos);
             $this->facturacion->save();
@@ -148,8 +155,8 @@ class FacturacionDiplomadosController extends Controller
                     $monto = $request['montoA'][$i];
 
                     $camposCarga = [
-                        'curso'         => $request['cursoA'][$i], 
-                        'monto'         => $request['montoA'][$i],
+                        'curso'             => $request['cursoA'][$i], 
+                        'monto'             => $request['montoA'][$i],
                         'facturaDiplomado'  => $facturacionDiplomado->id
                     ];
                     DatosFacturaDiplomado::create($camposCarga);

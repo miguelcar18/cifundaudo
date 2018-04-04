@@ -113,6 +113,22 @@
 		<script type="text/javascript" src="{{ asset('assets/js/numeral.js') }}"></script>
 		<script type="text/javascript" src="{{ asset('assets/js/custom.js') }}"></script>
 		@section('javascripts') 
+		<script type="text/javascript">
+			$(function () {
+				@if(Session::has('message'))
+				var mensaje1 = "{{ Session::get('message') }}";
+				noty({
+					width: 200,
+					text: mensaje1,
+					type: "information",
+					dismissQueue: true,
+					timeout: 4000,
+					layout: "topCenter",
+					buttons: false
+				});
+				@endif
+			});
+		</script>
 		@show
 	</body>
 </html>

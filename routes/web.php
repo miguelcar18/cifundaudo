@@ -26,3 +26,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/buscarMontoCurso/{id}', ['as' => 'buscarMontoCurso', 'uses' => 'FacturacionCursosController@buscarMontoCurso']);
 Route::get('factura-curso/{id}', ['as' => 'reporteFacturaCurso', 'uses' =>'FacturacionCursosController@reporteFactura']);
 Route::get('factura-diplomado/{id}', ['as' => 'reporteFacturaDiplomado', 'uses' =>'FacturacionDiplomadosController@reporteFactura']);
+Route::get('/reportes', ['as' => 'reportes', 'uses' => 'ReportesController@index']);
+Route::post('/reportes', ['as' => 'resuldatosReportes', 'uses' =>'ReportesController@resultados']);
+Route::get('/cargar-recibo-pago', ['as' => 'cargarReciboPago', 'uses' => 'BackController@cargarReciboPago']);
+Route::post('/cargar-recibo-pago', ['as' => 'postCargarReciboPago', 'uses' =>'BackController@postCargarReciboPago']);
+Route::get('/estadisticas', ['as' => 'estadisticas', 'uses' => 'ReportesController@estadisticas']);

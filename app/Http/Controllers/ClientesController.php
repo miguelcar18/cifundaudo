@@ -3,6 +3,7 @@
 namespace Fundaudo\Http\Controllers;
 
 use Fundaudo\Cliente;
+use Fundaudo\User;
 use Illuminate\Http\Request;
 use Fundaudo\Http\Requests;
 use Fundaudo\Http\Requests\ClientesRequest;
@@ -19,6 +20,7 @@ class ClientesController extends Controller
 {
     public function __construct(){
         $this->middleware('auth');
+        $this->middleware('is_admin');
     }
 
     /**
@@ -61,6 +63,17 @@ class ClientesController extends Controller
                 'direccion'     => $request['direccion']
             ];
             Cliente::create($campos);
+
+            User::create([
+                'name'      => $request['nombres'].' '.$request['apellidos'],
+                'email'     => $request['email'], 
+                'rol'       => 3, 
+                'username'  => $request['email'], 
+                'password'  => bcrypt('fundaudo'), 
+                'path'      => '',
+                'details'   => 'Cliente '.$request['nombres'].' '.$request['apellidos']
+            ]);
+
             return response()->json([
                 'validations' => true
             ]);
@@ -115,6 +128,15 @@ class ClientesController extends Controller
             ];
             $cliente->fill($campos);
             $cliente->save();
+
+            $user->fill([
+                'username'  => $request['email'], 
+                'name'      => $request['nombres'].' '.$request['apellidos'],
+                'email'     => $request['email'], 
+                'rol'       => 3
+                ]);
+            $user->save();
+
             return response()->json([
                 'validations'       => true,
                 'nuevoContenido'    => $campos           
@@ -134,6 +156,12 @@ class ClientesController extends Controller
             \App::abort(404);
         $nombreCompleto = $cliente->nombres.' '.$cliente->apellidos;
         $id = $cliente->id;
+        $user = User::where('email', $cliente->email)->get();
+        if($user->path != ""){
+            \File::delete('uploads/users/'.$user->path);
+        }
+        $user->delete();
+        
         $cliente->delete();
         if (\Request::ajax()) {
             return Response::json(array (

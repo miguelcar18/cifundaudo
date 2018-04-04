@@ -58,12 +58,14 @@
 						<a href="{{ URL::route('cursos.show', $curso->id) }}" class="btn btn-primary btn-icon" title="Ver {{ $curso->nombre }}" data-id="{{ $curso->id }}">
 							<i class="icon-eye"></i>
 						</a>
+						@if(Auth::user()->rol != 3)
 						<a href="{{ URL::route('cursos.edit', $curso->id) }}" class="btn btn-warning btn-icon" title="Editar {{ $curso->nombre }}" data-id="{{ $curso->id }}">
 							<i class="icon-pencil7"></i>
 						</a>
 						<a href="#" data-id="{{ $curso->id }}" class="btn btn-danger btn-icon tooltip-error borrar-usuario" data-rel="tooltip" title="Eliminar {{ $curso->nombre }}" objeto="{{ $curso->id }}" data-id="{{ $curso->id }}">
 							<i class="icon-cancel-square"></i>
 						</a>
+						@endif
 					</td>
 				</tr>
 				@endforeach

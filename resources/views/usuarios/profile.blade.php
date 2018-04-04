@@ -26,6 +26,8 @@
 								Administrador
 								@elseif($user->rol == 0)
 								Usuario
+								@elseif($user->rol == 3)
+								Cliente
 								@endif
 							</h4>
 							<h4 class="text-semibold no-margin">{{ $user->username }}</h4>

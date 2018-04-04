@@ -17,16 +17,22 @@
 					</tr>
 					<tr>
 						<td class="col-md-3 col-sm-3"><b>Cédula</b></td>
-						<td>{{ number_format(21453738, 0, '', '.') }}</td>
+						<td>{{ number_format($data->nombreFacturacionCurso->nombreCliente->cedula, 0, '', '.') }}</td>
 					</tr>
 					<tr>
 						<td class="col-md-3 col-sm-3"><b>Nombre y apellido</b></td>
-						<td>Maria Sanchez</td>
+						<td>{{ $data->nombreFacturacionCurso->nombreCliente->nombres.' '.$data->nombreFacturacionCurso->nombreCliente->apellidos }}</td>
 					</tr>
 					<tr>
 						<td class="col-md-3 col-sm-3"><b>Curso</b></td>
 						<td>
-							Análisis de precios lulown - 30.000
+							{{ $data->nombreCurso->nombre }}
+						</td>
+					</tr>
+					<tr>
+						<td class="col-md-3 col-sm-3"><b>Monto a deber</b></td>
+						<td>
+							{{ number_format($data->nombreCurso->costo - $data->monto, 2, ',', '.') }}
 						</td>
 					</tr>
 					{{--
